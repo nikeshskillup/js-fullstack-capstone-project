@@ -1,7 +1,6 @@
 // app.js
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const { MongoClient } = require('mongodb');
 const path = require('path');
 
@@ -10,15 +9,10 @@ const pinoLogger = require('./logger')
 const connectToDatabase = require('./models/db');
 
 const app = express();
-app.use("*",cors());
-const port = 3060;
+const port = 3050;
 
 // Serve static files from the public directory (for home.html)
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve static files from the 'static' directory
-app.use(express.static(path.join(__dirname, 'static')));
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve static files for React App from a subdirectory
 app.use('/app', express.static(path.join(__dirname, 'public', 'react-app')));
@@ -26,7 +20,7 @@ app.use('/app', express.static(path.join(__dirname, 'public', 'react-app')));
 
 // Route for Home Page - Serve home.html as the default page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'..', 'giftlink-frontend', 'public', 'home.html'));
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
 // Serve the React app's index.html for any other requests under /app
@@ -48,7 +42,6 @@ app.use(express.json());
 const giftRoutes = require('./routes/giftRoutes');
 // const authRoutes = require('./routes/authRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-
 const pinoHttp = require('pino-http');
 const logger = require('./logger');
 
@@ -69,10 +62,6 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).send('Internal Server Error');
 });
-
-app.get("/",(req,res)=>{
-    res.send("Inside the server")
-})
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
